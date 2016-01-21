@@ -3,6 +3,8 @@ package com.kolamomo.network.bio;
 import com.kolamomo.network.util.ApiLogger;
 
 import java.io.*;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
@@ -11,7 +13,7 @@ import java.net.Socket;
  * @author jay
  */
 public class BioClient {
-    private static final String DEFAULT_IP = "127.0.0.1";
+    private static final String DEFAULT_IP = "localhost";
     private static final int DEFAULT_PORT = 8080;
     private Socket socket;
 
@@ -20,9 +22,10 @@ public class BioClient {
     }
 
     public BioClient(String ip, int port) {
-        Socket socket = null;
         try {
-            socket = new Socket(ip, port);
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(InetAddress.getByName(ip), port));
+            ApiLogger.info("connect to server:" + socket.getRemoteSocketAddress() );
         } catch (IOException e) {
             ApiLogger.warn("BioClient constructor throws IOException, e: " + e.getMessage());
         }
@@ -33,6 +36,9 @@ public class BioClient {
         PrintWriter pw = null;
         String result = null;
         try {
+            if(socket == null) {
+                System.out.println("socket is null");
+            }
             br = getReader(socket);
             pw = getWriter(socket);
 
@@ -87,6 +93,4 @@ public class BioClient {
         }
 
     }
-
-
 }

@@ -3,6 +3,7 @@ package com.kolamomo.network.bio;
 import com.kolamomo.network.util.ApiLogger;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -23,7 +24,9 @@ public class BioServer {
 
     public BioServer(int port) {
         try {
-            serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket();
+            serverSocket.setReuseAddress(true);
+            serverSocket.bind(new InetSocketAddress(DEFAULT_PORT));
             ApiLogger.info("server start in port: " + port);
         } catch (IOException e) {
             ApiLogger.warn("bioServer start throws IOException, e:" + e.getMessage());
@@ -35,6 +38,7 @@ public class BioServer {
         while (true) {
             try {
                 socket = serverSocket.accept();
+                ApiLogger.info("server accept connection: " + socket.getRemoteSocketAddress().toString());
                 BioServerHandler bioServerHandler = new BioServerHandler(socket);
                 new Thread(bioServerHandler).start();
             } catch (IOException e) {
@@ -73,7 +77,7 @@ public class BioServer {
                     String content = br.readLine();
                     ApiLogger.info("BioServerHandler receive data: " + content);
                     pw.println("hello: " + content);
-                    if("bye".equals(content)) {
+                    if(content == null || "bye".equals(content)) {
                         break;
                     }
                 }
