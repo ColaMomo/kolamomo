@@ -107,7 +107,7 @@ public class NioClient {
      * 发送请求
      */
     private void send(SelectionKey selectionKey) throws IOException, InterruptedException {
-        Thread.sleep(1000);
+        //Thread.sleep(1000);
         SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
         String request = new Date(System.currentTimeMillis()).toString();
 
@@ -118,6 +118,9 @@ public class NioClient {
             socketChannel.write(writeBuffer);
         }
         socketChannel.register(selector, SelectionKey.OP_READ);
+//      发送请求后，将selctor设置为等待读取状态，这样可以保证每次发送一条数据，等待服务端回复，再发送下一条数据，可以解决tcp粘包拆包的问题。
+//      但一次请求一次答复的方式，不利于传入大文件的效率，如果改成下面的设置，传输效率会提升，但会出现tcp粘包拆包的问题。
+//      socketChannel.register(selector, SelectionKey.OP_READ|SelectionKey.OP_WRITE);
     }
 
     /**
@@ -133,6 +136,7 @@ public class NioClient {
         String body = new String(bytes, "UTF-8");
         ApiLogger.info("receive data: " + body);
         socketChannel.register(selector, SelectionKey.OP_WRITE);
+//      socketChannel.register(selector, SelectionKey.OP_READ|SelectionKey.OP_WRITE);
     }
 
     public static void main(String args[]) {

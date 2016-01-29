@@ -21,6 +21,11 @@ public class BioClient {
         this(DEFAULT_IP, DEFAULT_PORT);
     }
 
+    /**
+     * 创建客户端socket，并与服务端进行连接
+     * @param ip
+     * @param port
+     */
     public BioClient(String ip, int port) {
         try {
             socket = new Socket();
@@ -31,6 +36,11 @@ public class BioClient {
         }
     }
 
+    /**
+     * 向服务端发送请求，并接收服务端回复
+     * @param request
+     * @return
+     */
     public String sendRequest(String request) {
         BufferedReader br = null;
         PrintWriter pw = null;

@@ -22,6 +22,10 @@ public class BioServer {
         this(DEFAULT_PORT);
     }
 
+    /**
+     * 创建一个新的服务端socket，并绑定本地端口，进行监听
+     * @param port
+     */
     public BioServer(int port) {
         try {
             serverSocket = new ServerSocket();
@@ -33,6 +37,9 @@ public class BioServer {
         }
     }
 
+    /**
+     * 服务端以轮询的方式接受客户端的请求，并创建一个新的线程处理请求
+     */
     public void service() {
         Socket socket = null;
         while (true) {
@@ -57,6 +64,9 @@ public class BioServer {
         return new PrintWriter(outputStream, true);
     }
 
+    /**
+     * 服务端请求处理器
+     */
     class BioServerHandler implements Runnable {
         private Socket socket;
 
@@ -66,6 +76,9 @@ public class BioServer {
             this.socket = socket;
         }
 
+        /**
+         * 具体的请求处理逻辑，接收客户端请求，进行处理，然后向客户端发送回复
+         */
         @Override
         public void run() {
             BufferedReader br = null;

@@ -1,5 +1,6 @@
 package com.kolamomo.network.netty;
 
+import com.kolamomo.network.util.ApiLogger;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -29,7 +30,10 @@ public class NettyServer {
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 1024)
                     .childHandler(new ChildChannelHandler());
+            //绑定端口
             ChannelFuture channelFuture = bootstrap.bind(port).sync();
+            ApiLogger.info("netty server started in port: " + port);
+            //等待服务端监听端口关闭
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -45,5 +49,9 @@ public class NettyServer {
         protected void initChannel(SocketChannel socketChannel) throws Exception {
             socketChannel.pipeline().addLast(new DefaultServerHandler());
         }
+    }
+
+    public static void main(String[] args) {
+        NettyServer nettyServer = new NettyServer();
     }
 }

@@ -121,7 +121,7 @@ public class NioServer {
         SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
 
         //将字符串数据写入buffer中
-        ByteBuffer writeBuffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
+        ByteBuffer writeBuffer = ByteBuffer.allocate(response.length());
         writeBuffer.put(response.getBytes());
         writeBuffer.flip();
 

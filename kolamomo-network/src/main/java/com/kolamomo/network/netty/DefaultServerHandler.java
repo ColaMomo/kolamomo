@@ -1,6 +1,8 @@
 package com.kolamomo.network.netty;
 
+import com.kolamomo.network.util.ApiLogger;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -9,11 +11,24 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public class DefaultServerHandler extends ChannelHandlerAdapter {
     @Override
-    public void channelRead(ChannelHandlerContext context, Object message) {
-        ByteBuf buf = (ByteBuf) message;
+    public void channelRead(ChannelHandlerContext context, Object message) throws Exception {
+        ByteBuf reqBuf = (ByteBuf) message;
+        byte[] request = new byte[reqBuf.readableBytes()];
+        reqBuf.readBytes(request);
 
+        String body = new String(request, "UTF-8");
+        ApiLogger.info("server receive: " + body);
+        ByteBuf respBuf = Unpooled.copiedBuffer(("hello: " + body).getBytes());
+        context.write(respBuf);
     }
 
     @Override
-    public void channelWrite()
+    public void channelReadComplete(ChannelHandlerContext context) throws Exception {
+        context.flush();
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
+        context.close();
+    }
 }
