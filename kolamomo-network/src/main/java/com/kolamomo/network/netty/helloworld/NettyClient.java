@@ -1,4 +1,4 @@
-package com.kolamomo.network.netty;
+package com.kolamomo.network.netty.helloworld;
 
 import com.kolamomo.network.util.ApiLogger;
 import io.netty.bootstrap.Bootstrap;
