@@ -7,8 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class AtomicObject implements Runnable {
     private final AtomicInteger count = new AtomicInteger();
-
-    @Override
     public void run() {
         count.getAndIncrement();
     }
