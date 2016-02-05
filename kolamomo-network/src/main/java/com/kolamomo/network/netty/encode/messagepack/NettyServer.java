@@ -1,4 +1,4 @@
-package com.kolamomo.network.netty;
+package com.kolamomo.network.netty.encode.messagepack;
 
 import com.kolamomo.network.util.ApiLogger;
 import io.netty.bootstrap.ServerBootstrap;
@@ -9,6 +9,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 
 
 /**
@@ -47,6 +49,10 @@ public class NettyServer {
 
         @Override
         protected void initChannel(SocketChannel socketChannel) throws Exception {
+            socketChannel.pipeline().addLast("frame decoder", new LengthFieldBasedFrameDecoder(65536, 0, 2, 0, 2));
+            socketChannel.pipeline().addLast("msgpack decoder", new MsgpackDecoder());
+            socketChannel.pipeline().addLast("frame encoder", new LengthFieldPrepender(2));
+            socketChannel.pipeline().addLast("msgpack encoder", new MsgpackEncoder());
             socketChannel.pipeline().addLast(new DefaultServerHandler());
         }
     }

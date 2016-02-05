@@ -1,4 +1,4 @@
-package com.kolamomo.network.netty;
+package com.kolamomo.network.netty.helloworld;
 
 import com.kolamomo.network.util.ApiLogger;
 import io.netty.buffer.ByteBuf;
@@ -38,6 +38,7 @@ public class DefaultClientHandler extends ChannelHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
+        ApiLogger.warn("DefaultServerHandler exception: " + cause.getMessage());
         context.close();
     }
 }

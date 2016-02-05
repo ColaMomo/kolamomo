@@ -4,17 +4,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.nio.channels.ByteChannel;
 import java.nio.channels.FileChannel;
+import java.nio.channels.SocketChannel;
 
 /**
  * Created by jiangchao on 16/1/31.
  */
 public class NioBuffer {
-    private static final String FILE_NAME = "/Users/jiangchao/Project/kolamomo/kolamomo/kolamomo-io/target/classes/com/kolamomo/io/nio/buffer/Hello.class";
+    private static final String FILE_NAME = "/home/jay/project/kolamomo/kolamomo/kolamomo-io/target/classes/com/kolamomo/io/nio/buffer/Hello.class";
     private static final int DEFAULT_BUFFER_SIZE = 48;
-    private static final int DEFAULT_BYTEARRAY_SIZE = 16;
-    public void readFile() {
+    private static final int DEFAULT_BYTEARRAY_SIZE = 8;
+    public void readClassFile() {
         try {
             RandomAccessFile file = new RandomAccessFile(FILE_NAME, "rw");
             FileChannel fileChannel = file.getChannel();
@@ -49,7 +52,7 @@ public class NioBuffer {
 
     }
 
-
+    //byte转16进制字符串
     private String byteToHexString(byte b) {
         String result = "";
         int v = b & 0xFF;
@@ -62,18 +65,18 @@ public class NioBuffer {
 
     }
 
-    public static String byteToChar(byte b) {
-        int num = (int)b;
-        if(num > 127 || num < 0) {
-            return "" + (char)(b >> 7) + (char)(b & 0x7F);
+    //byte转char, 只转换可打印字符，不可打印字符输出'.'
+    public static char byteToChar(byte b) {
+        if(b >= 32 && b <= 126) {
+            return (char)(b);
         }
-        return "" + (char) ((b & 0xFF));
+        return '.';
     }
 
 
 
     public static void main(String[] args) {
         NioBuffer nioBuffer = new NioBuffer();
-        nioBuffer.readFile();
+        nioBuffer.readClassFile();
     }
 }
